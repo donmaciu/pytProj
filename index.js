@@ -1,11 +1,16 @@
 const Koa = require('koa');
+const { getRouter } = require('./routes');
+
+
+
 
 const app = new Koa();
+const router = getRouter();
 
-app.use(async (ctx, next) => {
-    ctx.body = "<h1>Test</h1>";
-    console.log("working...");
-    await next();
-})
+
+
+
+
+app.use(router.routes()).use(router.allowedMethods())
 
 app.listen(3000);
