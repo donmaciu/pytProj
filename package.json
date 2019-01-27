@@ -38,6 +38,8 @@
     "react-dom": "^16.7.0",
     "react-dropzone": "^8.0.3",
     "react-file-drop": "^0.2.7",
+    "react-spinner": "^0.2.7",
+    "react-spinners": "^0.5.1",
     "react-virtualized": "^9.21.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
