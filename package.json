@@ -1,0 +1,13 @@
+{
+  "name": "pytProj",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "sync": "onchange.sh rsync -avt --delete . 192.168.1.105:/home/donmaciu/projekty/pyt/"
+  },
+  "dependencies": {
+    "koa": "^2.6.2",
+    "koa-router": "^7.4.0"
+  }
+}
