@@ -1,4 +1,5 @@
 const { PythonShell } = require('python-shell');
+const uniqueString = require('unique-string');
 
 let isReading = false;
 
@@ -40,6 +41,107 @@ const readCard = () => {
     })
 }
 
+let readTasks = {}
+
+class ReadCardTask {
+    constructor(timeout) {
+        this.id = uniqueString();
+        readTasks[this.id] = this;
+        this.values = [];
+        this.err = [];
+
+
+        this.pyshell = null;
+
+        this.start();
+
+        if(timeout > 0) {
+            setTimeout(() => { this.terminate() }, timeout)
+        }
+    }
+
+    isTerminated() {
+        if(!this.pyshell) {
+            return false;
+        }
+
+        return this.pyshell.terminated;
+    }
+
+    start() {
+        this.pyshell = new PythonShell('Read.py', { mode:'text', scriptPath: __dirname, pythonPath: '/usr/bin/python2.7'})
+
+        this.pyshell.on('message', (message) => {
+            this.values.push(message);
+        } )
+
+        this.pyshell.on('stderr', (err) => {
+            this.err.push(err);
+        })
+
+
+        this.pyshell.end(() => {})
+    }
+
+    terminate() {
+        console.log(this.id, 'termination...')
+
+        if(!this.pyshell) {
+            return;
+        }
+
+        this.pyshell.terminate();
+
+        cleanup()
+        .then(res => {
+
+        })
+        .catch(err => {
+            console.log(err)
+        })
+        
+    }
+
+    getResult() {
+        return this.values;
+    }
+}
+
+/**
+ * 
+ * @param {String} id 
+ * @param {*} inTask 
+ */
+const readCardTask = (id, inTask, timeout) => {
+    /** @type {ReadCardTask} */
+    let task = null;
+
+
+
+    if(id && !readTasks[id]) {
+        throw new Error('not_found');
+    } else if(id) {
+        task = readTasks[id];
+        console.log('intask',inTask)
+        if(task.isTerminated() === false && inTask && inTask.terminated === true) {
+            task.terminate();
+        }
+
+    } else {
+        task = new ReadCardTask(timeout);
+    }
+
+
+    let retTask = {
+        id: task.id,
+        results: task.values,
+        errs: task.err,
+        terminated: task.isTerminated()
+    }
+
+    return retTask;
+}
+
 const writeCard = data => {
     return new Promise((resolve, reject) => {
         if(!data || data.length === 0) {
@@ -63,4 +165,5 @@ module.exports = {
     readCard: readCard,
     writeCard: writeCard,
     cleanup: cleanup,
+    readCardTask: readCardTask,
 }

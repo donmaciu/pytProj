@@ -1,4 +1,4 @@
-const { readCard, writeCard, cleanup } = require('../../python/rfc');
+const { readCard, writeCard, cleanup, readCardTask } = require('../../python/rfc');
 const { getRouter } = require('./router');
 
 const router = getRouter();
@@ -16,6 +16,48 @@ router.get('/cleanup', async(ctx, next) => {
     ctx.body = {status: 'OK'};
     await next();
 })
+
+const getTask = async (ctx, next) => {
+    try {
+        const res = readCardTask(ctx.params.id, null, ctx.query.timeout);
+
+        ctx.body = res;
+    } catch (err) {
+        ctx.status = 500;
+
+        console.log(err);
+
+        ctx.body = {
+            code: 500,
+            error: err
+        }
+    }
+
+    await next();
+}
+
+const postTask = async (ctx, next) => {
+    try {
+        const res = readCardTask(ctx.params.id, ctx.request.body);
+
+        ctx.body = res;
+    } catch (err) {
+        ctx.status = 500;
+
+        ctx.body = {
+            code: 500,
+            error: err
+        }
+    }
+
+    await next();
+}
+
+router.get('/readTask', getTask)
+
+router.get('/readTask/:id', getTask)
+
+router.post('/readTask/:id', postTask)
 
 router.get('/read', async(ctx, next) => {
 

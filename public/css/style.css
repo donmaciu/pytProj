@@ -1,0 +1,15 @@
+.button-con {
+    height: 15vH;
+}
+
+.screen-header {
+    height: 20vH;
+}
+
+.screen-footer {
+    height: 20vH;
+}
+
+.button-con .btn-block, .screen-footer .btn-block {
+    height: 100%;
+}
