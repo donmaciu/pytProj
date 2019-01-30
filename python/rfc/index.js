@@ -161,9 +161,16 @@ const writeCard = data => {
     })
 }
 
+const loopReader = () => {
+    PythonShell.run('LoopRead.py', {mode: 'text', scriptPath: __dirname, pythonPath: '/usr/bin/python2.7', pythonOptions: ['-u']}, () => {
+
+    })
+}
+
 module.exports = {
     readCard: readCard,
     writeCard: writeCard,
     cleanup: cleanup,
     readCardTask: readCardTask,
+    loopReader: loopReader
 }

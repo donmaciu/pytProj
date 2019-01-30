@@ -88,6 +88,41 @@ router.get('/read', async(ctx, next) => {
     await next();
 })
 
+let readObj = {}
+
+router.get('/getRead', async(ctx, next) => {
+    ctx.body = readObj;
+
+    await next();
+})
+
+router.post('/setRead', async(ctx,next) => {
+    let body = ctx.request.body;
+
+    if(body) {
+        let diff = false;
+
+        Object.keys(body).forEach(key => {
+            if(typeof body[key] === "string") {
+                body[key] = body[key].trim();
+            }
+
+            if(body[key] !== readObj[key]) {
+                diff = true;
+            }
+        })
+
+        if(diff) {
+            readObj = {...readObj, ...body, timer: (new Date()).getTime()}
+        
+            console.log(readObj);
+        }
+
+    }
+
+    await next();
+})
+
 
 router.get('/write', async(ctx, next) => {
     let res = null;
